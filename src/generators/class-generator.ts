@@ -175,6 +175,11 @@ class ${rootWidget.controller}Base {
   }
   ${routeAwareControllerMethods}
 
+  void didUpdateWidgetPreHook(dynamic oldWidget) {
+  }
+  void didUpdateWidgetPostHook(dynamic oldWidget) {
+  }
+  
   @mustCallSuper
   void dispose() {
     ${disposeLines.map(a => `${a}.dispose();`).join('\n    ')}
@@ -245,7 +250,10 @@ class _${widgetName}State extends State<${widgetName}>${mixinsCode} {
 
   @override
   void didUpdateWidget(${widgetName} oldWidget) {
-    super.didUpdateWidget(oldWidget);${(stateVarsUpdate.length > 0 ? '\n    ' : '') + stateVarsUpdate.join(`\n    `)}
+    super.didUpdateWidget(oldWidget);
+    ${hasController ? `\n    ctrl.didUpdateWidgetPreHook(oldWidget);` : ''}
+    ${(stateVarsUpdate.length > 0 ? '\n    ' : '') + stateVarsUpdate.join(`\n    `)}
+    ${hasController ? `\n    ctrl.didUpdateWidgetPostHook(oldWidget);` : ''}
   }
 
   @override
