@@ -140,7 +140,15 @@ export default class Manager {
 
     private createValueTransformer(p: ConfigValueTransformer): IValueTransformer | null {
         switch (p.type) {
-            case 'enum': return p.enumType ? new EnumValueTransformer(p.enumType) : null;
+            case 'enum': 
+                if (p.widgetEnumMap) {
+                    // Use widget-specific enum mapping
+                    return new EnumValueTransformer(p.enumType || '', p.widgetEnumMap);
+                } else if (p.enumType) {
+                    // Use single enum type for all widgets
+                    return new EnumValueTransformer(p.enumType);
+                }
+                return null;
             case 'color': return new ColorValueTransformer();
             case 'edgeInsets': return new EdgeInsetsValueTransformer();
             default: return null;
